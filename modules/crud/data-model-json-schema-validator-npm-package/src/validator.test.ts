@@ -1,5 +1,5 @@
 import SCHEMA__1_0 from '../../data-model-json-schema/1.0.json'
-import { determineSchemaVersionFromDataModel, getSchema, validate, validateAgainstSchema } from './validator'
+import { determineSchemaVersionFromDataModel, getSchema, getValidator, validate, validateAgainstSchema } from './validator'
 
 describe('determineSchemaVersionFromDataModel', () => {
   it('should return 1.0', () => {
@@ -46,6 +46,19 @@ describe('getSchema', () => {
 
   it('should throw error for a random string version', () => {
     expect(() => getSchema('asddsadsaasd')).toThrow(/Unknown schema version/)
+  })
+})
+
+describe('getValidator', () => {
+  it('should return the same compiled validator on subsequent calls', () => {
+    const first = getValidator('1.0')
+    const second = getValidator('1.0')
+
+    expect(first).toBe(second)
+  })
+
+  it('should throw error on UNKNOWN version', () => {
+    expect(() => getValidator('UNKNOWN' as any)).toThrow(/Unknown schema version/)
   })
 })
 
